@@ -1,0 +1,13 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{A46FC708-4DAF-AB89-84DF-8394456D5939}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "TencentCourseProject",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
