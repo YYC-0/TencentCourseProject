@@ -1,23 +1,14 @@
 # TencentCourseProject
 
-apk文件、视频演示：
-
-百度网盘链接：https://pan.baidu.com/s/1V3LB_aHsAwVz0zNC35xmDg 
-
-提取码：1234 
-=======
-apk文件、视频演示百度网盘链接：  
-  
-https://pan.baidu.com/s/1V3LB_aHsAwVz0zNC35xmDg   
-  
-提取码：1234   
->>>>>>> 616b5371315039574e3ec3225faaa42c32b7ec80
-
-
 
 ## 第一次作业
 
-UE4源码编译，安卓项目打包
+UE4源码编译，安卓项目打包 
+
+apk文件、视频演示百度网盘链接：  
+链接：https://pan.baidu.com/s/1AJ52-VjIERaXQYcbn7fmMw 
+提取码：1234 
+
 
 相关文档：
 
@@ -29,9 +20,15 @@ https://docs.unrealengine.com/zh-CN/Platforms/Mobile/Android/GettingStarted/inde
 
 
 
-## 第二次作业s
+## 第二次作业
 
 在ThirdPersonExample中实现射击靶子功能，实现联网功能 
+
+apk文件、视频演示百度网盘链接：  
+链接：https://pan.baidu.com/s/1-dV4ySrFlPQL5ZCEFf6B5w 
+提取码：1234 
+
+相关文档：
 
 https://docs.unrealengine.com/zh-CN/Engine/Animation/AnimHowTo/BlendSpace/index.html
 
