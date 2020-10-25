@@ -1,10 +1,18 @@
 # TencentCourseProject
 
+<<<<<<< HEAD
 apk文件、视频演示：
 
 百度网盘链接：https://pan.baidu.com/s/1V3LB_aHsAwVz0zNC35xmDg 
 
 提取码：1234 
+=======
+apk文件、视频演示百度网盘链接：  
+  
+https://pan.baidu.com/s/1V3LB_aHsAwVz0zNC35xmDg   
+  
+提取码：1234   
+>>>>>>> 616b5371315039574e3ec3225faaa42c32b7ec80
 
 
 
@@ -19,6 +27,7 @@ https://docs.unrealengine.com/zh-CN/Programming/Development/BuildingUnrealEngine
 https://docs.unrealengine.com/zh-CN/Platforms/Mobile/Android/Setup/AndroidStudio/index.html
 
 https://docs.unrealengine.com/zh-CN/Platforms/Mobile/Android/GettingStarted/index.html
+<<<<<<< HEAD
 
 
 
@@ -35,3 +44,5 @@ https://docs.unrealengine.com/zh-CN/Programming/Tutorials/FirstPersonShooter/ind
 https://docs.unrealengine.com/zh-CN/Engine/Animation/AnimHowTo/AimOffset/index.html
 
 https://docs.unrealengine.com/zh-CN/Resources/Showcases/BlueprintMultiplayer/index.html
+=======
+>>>>>>> 616b5371315039574e3ec3225faaa42c32b7ec80
