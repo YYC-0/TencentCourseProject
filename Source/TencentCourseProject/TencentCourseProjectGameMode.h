@@ -13,7 +13,7 @@ class ATencentCourseProjectGameMode : public AGameModeBase
 
 public:
 	ATencentCourseProjectGameMode();
+
+
 };
-
-
 

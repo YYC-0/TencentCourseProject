@@ -19,3 +19,19 @@ https://docs.unrealengine.com/zh-CN/Programming/Development/BuildingUnrealEngine
 https://docs.unrealengine.com/zh-CN/Platforms/Mobile/Android/Setup/AndroidStudio/index.html
 
 https://docs.unrealengine.com/zh-CN/Platforms/Mobile/Android/GettingStarted/index.html
+
+
+
+## 第二次作业
+
+https://docs.unrealengine.com/zh-CN/Engine/Animation/AnimHowTo/BlendSpace/index.html
+
+Socket:
+
+https://blog.csdn.net/u013412391/article/details/106981125
+
+https://docs.unrealengine.com/zh-CN/Programming/Tutorials/FirstPersonShooter/index.html
+
+https://docs.unrealengine.com/zh-CN/Engine/Animation/AnimHowTo/AimOffset/index.html
+
+https://docs.unrealengine.com/zh-CN/Resources/Showcases/BlueprintMultiplayer/index.html
