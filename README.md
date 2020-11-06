@@ -40,3 +40,16 @@ https://docs.unrealengine.com/zh-CN/Engine/Animation/AnimHowTo/AimOffset/index.h
 
 https://docs.unrealengine.com/zh-CN/Resources/Showcases/BlueprintMultiplayer/index.html
 
+
+
+## 第三次作业 
+
+添加游戏界面： 包含角色个人信息，基础操作按钮，计分显示。 
+
+添加得分排行榜 
+
+apk文件、视频演示百度网盘链接：  
+
+链接：https://pan.baidu.com/s/1H7z3d4_KeBhHMUSn_Z-N9g 
+提取码：1234 
+
