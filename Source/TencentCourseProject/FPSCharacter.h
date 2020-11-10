@@ -28,7 +28,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	// Fire
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "CharacterAction")
 	void Fire();
 
 	void GetScore(int32 s);
@@ -46,6 +46,14 @@ public:
 
 	// score
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	int32 score;
+	int32 Score;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		float Health;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		float Energy;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		int32 Ammo;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		int32 AmmoMax;
 };

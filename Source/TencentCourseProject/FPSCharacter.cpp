@@ -11,7 +11,11 @@ AFPSCharacter::AFPSCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	score = 0;
+	Score = 0;
+	Health = 1.0;
+	Energy = 1.0;
+	AmmoMax = 10;
+	Ammo = AmmoMax;
 }
 
 // Called when the game starts or when spawned
@@ -19,7 +23,6 @@ void AFPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	score = 0;
 	UActorComponent *Audio = GetComponentByClass(UAudioComponent::StaticClass());
 	if (Audio)
 	{
@@ -39,15 +42,22 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AFPSCharacter::Fire);
+	//PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AFPSCharacter::Fire);
 }
 
 void AFPSCharacter::Fire()
 {
-	if (ShootingAudio)
+	if (Ammo <= 0)
 	{
-		ShootingAudio->Play();
+		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, TEXT("Need reload ammo!"));
+		return;
 	}
+	Ammo -= 1;
+
+	//if (ShootingAudio)
+	//{
+	//	ShootingAudio->Play();
+	//}
 
 	if (ProjectileClass)
 	{
@@ -88,9 +98,9 @@ void AFPSCharacter::Fire()
 
 void AFPSCharacter::GetScore(int32 s)
 {
-	score += s;
+	Score += s;
 	//GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::FromInt(score));
-	if (score >= 100) // win
+	if (Score >= 100) // win
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Yellow, TEXT("YOU WIN!"));
 	}
@@ -98,5 +108,5 @@ void AFPSCharacter::GetScore(int32 s)
 
 void AFPSCharacter::ClearScore()
 {
-	score = 0;
+	Score = 0;
 }
