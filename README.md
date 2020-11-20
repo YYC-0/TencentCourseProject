@@ -51,7 +51,8 @@ https://docs.unrealengine.com/zh-CN/Resources/Showcases/BlueprintMultiplayer/ind
 
 apk文件、视频演示百度网盘链接：  
 
-链接：https://pan.baidu.com/s/1H7z3d4_KeBhHMUSn_Z-N9g 
+链接：https://pan.baidu.com/s/1H7z3d4_KeBhHMUSn_Z-N9g  
+
 提取码：1234  
 
 相关文档：
@@ -71,4 +72,10 @@ https://docs.unrealengine.com/zh-CN/Engine/UMG/index.html
 实现一种动作表现，当站立不动时是全身表现，移动时是上半身表现 
 
 按下Alt键时，实现自由视角，但角色头部可跟随视角移动 
+
+apk文件、视频演示百度网盘链接： 
+
+https://pan.baidu.com/s/1cYC61WFxldauNXnmppsRFg 
+
+提取码：1234 
 
