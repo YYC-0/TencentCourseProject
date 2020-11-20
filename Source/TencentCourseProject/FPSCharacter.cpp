@@ -13,7 +13,7 @@ AFPSCharacter::AFPSCharacter()
 
 	Score = 0;
 	Health = 1.0;
-	Energy = 1.0;
+	Energy = 0.5;
 	AmmoMax = 10;
 	Ammo = AmmoMax;
 }

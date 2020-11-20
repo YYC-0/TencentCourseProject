@@ -53,6 +53,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		float Energy;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		float EnergyReduceSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		float EnergyRestoreSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		int32 Ammo;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		int32 AmmoMax;
