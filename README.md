@@ -85,3 +85,17 @@ https://docs.unrealengine.com/zh-CN/Engine/Animation/index.html
 
 
 
+# 第五次作业 
+
+实现枪械pick功能 
+
+枪械分类 
+
+1. 射线枪械：无物理弹道，击中不同部位有不同音效 
+2. 抛体枪械，速度衰减到若干后产生爆炸，并区分物理材质 
+
+apk文件、视频演示百度网盘链接：  
+
+链接：https://pan.baidu.com/s/18d_eX8ffwJD9tfSKcN5xlA  
+
+提取码：1234  
