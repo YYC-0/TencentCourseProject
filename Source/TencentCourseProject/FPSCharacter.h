@@ -7,6 +7,9 @@
 #include "FPSProjectile.h"
 #include "FPSCharacter.generated.h"
 
+class ARayGun;
+class AProjecitleGun;
+
 UCLASS()
 class TENCENTCOURSEPROJECT_API AFPSCharacter : public ACharacter
 {
@@ -27,6 +30,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// pickup gun
+	UFUNCTION()
+		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+
 	// Fire
 	UFUNCTION(BlueprintCallable, Category = "CharacterAction")
 	void Fire();
@@ -34,15 +41,16 @@ public:
 	void GetScore(int32 s);
 	void ClearScore();
 
+	void PickupGun(ARayGun* RayGun);
+	void PickupGun(AProjecitleGun* ProjectileGun);
+	void DropGun();
+
 	// �������λ�õ�ǹ��ƫ��
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	FVector MuzzleOffset;
 	// ���ɷ�������
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<class AFPSProjectile> ProjectileClass;
-
-	// Shooting sound
-	UAudioComponent *ShootingAudio;
 
 	// score
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
@@ -60,4 +68,17 @@ public:
 		int32 Ammo;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		int32 AmmoMax;
+
+private:
+	enum GunType
+	{
+		Ray,
+		Projectile
+	};
+	GunType CurrentGunType;
+
+	ARayGun *RayGun;
+	AProjecitleGun *ProjectileGun;
+	TSubclassOf<AProjecitleGun> ProjecitleGunBP;
+	TSubclassOf<ARayGun> RayGunBP;
 };

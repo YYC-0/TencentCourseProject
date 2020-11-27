@@ -28,6 +28,7 @@ AFPSProjectile::AFPSProjectile()
 	ProjectileMoveComponent->Bounciness = 0.3f;
 
 	InitialLifeSpan = 3.0f; // ��������������
+	FireSpeed = 0;
 
 	hitted = false;
 }
@@ -37,7 +38,7 @@ void AFPSProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CollisionComponent->OnComponentHit.AddDynamic(this, &AFPSProjectile::OnHit);
+	//CollisionComponent->OnComponentHit.AddDynamic(this, &AFPSProjectile::OnHit);
 }
 
 // Called every frame
@@ -47,46 +48,48 @@ void AFPSProjectile::Tick(float DeltaTime)
 
 }
 
-void AFPSProjectile::FireInDirection(AFPSCharacter *Projector_, const FVector & ShootDirection)
+void AFPSProjectile::FireInDirection(const FVector & ShootDirection)
 {
-	this->Projector = Projector_;
-	ProjectileMoveComponent->Velocity = ShootDirection * ProjectileMoveComponent->InitialSpeed;
+	//GEngine->AddOnScreenDebugMessage(0, 1.0, FColor::Red, TEXT("Fire!"));
+	//ProjectileMoveComponent->Velocity = ShootDirection * ProjectileMoveComponent->MaxSpeed;
+	CollisionComponent->AddForce(ShootDirection * ShootForce);
+	FireSpeed = GetVelocity().Size();
 }
 
 void AFPSProjectile::OnHit(UPrimitiveComponent *HitComponent, AActor *OtherActor, UPrimitiveComponent *OtherComponent, FVector NormalImpulse, const FHitResult &Hit)
 {
-	if (!hitted && OtherActor->IsA(ATarget::StaticClass()))
-	{
-		// Hit Target
-		//GEngine->AddOnScreenDebugMessage(0, 1.0, FColor::Red, TEXT("Hit Target!"));
-		ProjectileMoveComponent->SetActive(false); // stop moving
-		CollisionComponent->SetActive(false);
-		hitted = true;
+	//if (OtherActor->IsA(ATarget::StaticClass()))
+	//{
+	//	// Hit Target
+	//	//GEngine->AddOnScreenDebugMessage(0, 1.0, FColor::Red, TEXT("Hit Target!"));
+	//	ProjectileMoveComponent->SetActive(false); // stop moving
+	//	CollisionComponent->SetActive(false);
+	//	hitted = true;
 
-		// Compute distance from target center
-		ATarget *target = Cast<ATarget>(OtherActor);
-		FVector TargetPos, TargetBox;
-		target->GetActorBounds(false, TargetPos, TargetBox);
-		FVector ProjectilePos = GetActorLocation();
-		float Distance = FVector::Dist(TargetPos, ProjectilePos);
-		float Ration = Distance / TargetBox.Z;
-		// 0.27 0.44 0.65 0.83
-		// compute score
-		int32 score = 0;
-		if (Ration < 0.27)
-			score = 10;
-		else if (Ration < 0.44)
-			score = 6;
-		else if (Ration < 0.65)
-			score = 4;
-		else if (Ration < 0.83)
-			score = 2;
+	//	// Compute distance from target center
+	//	ATarget *target = Cast<ATarget>(OtherActor);
+	//	FVector TargetPos, TargetBox;
+	//	target->GetActorBounds(false, TargetPos, TargetBox);
+	//	FVector ProjectilePos = GetActorLocation();
+	//	float Distance = FVector::Dist(TargetPos, ProjectilePos);
+	//	float Ration = Distance / TargetBox.Z;
+	//	// 0.27 0.44 0.65 0.83
+	//	// compute score
+	//	int32 score = 0;
+	//	if (Ration < 0.27)
+	//		score = 10;
+	//	else if (Ration < 0.44)
+	//		score = 6;
+	//	else if (Ration < 0.65)
+	//		score = 4;
+	//	else if (Ration < 0.83)
+	//		score = 2;
 
-		Projector->GetScore(score);
-		GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Red, TEXT("score: " + FString::FromInt(score)));
+	//	//Projector->GetScore(score);
+	//	GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Red, TEXT("score: " + FString::FromInt(score)));
 
-		target->AddBulletHole(ProjectilePos); // bullet hole decal
-	}
+	//	target->AddBulletHole(ProjectilePos); // bullet hole decal
+	//}
 
-	this->Destroy();
+	//this->Destroy();
 }

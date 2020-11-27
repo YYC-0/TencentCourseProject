@@ -4,6 +4,9 @@
 #include "FPSCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/AudioComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "RayGun.h"
+#include "ProjecitleGun.h"
 
 // Sets default values
 AFPSCharacter::AFPSCharacter()
@@ -16,6 +19,20 @@ AFPSCharacter::AFPSCharacter()
 	Energy = 0.5;
 	AmmoMax = 10;
 	Ammo = AmmoMax;
+	RayGun = nullptr;
+	ProjectileGun = nullptr;
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> ProjectileGun_BP(TEXT("/Game/Blueprints/BP_ProjecitleGun.BP_ProjecitleGun"));
+	if (ProjectileGun_BP.Object)
+		ProjecitleGunBP = (UClass*)ProjectileGun_BP.Object->GeneratedClass;
+	else
+		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, TEXT("Construct Projectile Gun BP ERROR"));
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> RayGun_BP(TEXT("/Game/Blueprints/BP_RayGun.BP_RayGun"));
+	if (RayGun_BP.Object)
+		RayGunBP = (UClass*)RayGun_BP.Object->GeneratedClass;
+	else
+		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, TEXT("Construct Ray Gun BP ERROR"));
 }
 
 // Called when the game starts or when spawned
@@ -23,11 +40,17 @@ void AFPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UActorComponent *Audio = GetComponentByClass(UAudioComponent::StaticClass());
-	if (Audio)
+	UCapsuleComponent *Capsule = Cast<UCapsuleComponent>(RootComponent);
+	if (Capsule)
 	{
-		ShootingAudio = Cast<UAudioComponent>(Audio);
+		Capsule->OnComponentHit.AddDynamic(this, &AFPSCharacter::OnHit);
 	}
+	else
+		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, TEXT("Capsule Cast Error!"));
+
+	ARayGun *Gun = GetWorld()->SpawnActor<ARayGun>(RayGunBP);
+	PickupGun(Gun);
+	Gun->SetOwnedCharacter(this);
 }
 
 // Called every frame
@@ -45,6 +68,11 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	//PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AFPSCharacter::Fire);
 }
 
+void AFPSCharacter::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, FVector NormalImpulse, const FHitResult & Hit)
+{
+
+}
+
 void AFPSCharacter::Fire()
 {
 	if (Ammo <= 0)
@@ -58,42 +86,41 @@ void AFPSCharacter::Fire()
 	//{
 	//	ShootingAudio->Play();
 	//}
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	GetActorEyesViewPoint(CameraLocation, CameraRotation);
+	APlayerCameraManager *CurrentCamera = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
 
-	if (ProjectileClass)
-	{
-		FVector CameraLocation;
-		FRotator CameraRotation;
-		GetActorEyesViewPoint(CameraLocation, CameraRotation);
-		APlayerCameraManager *CurrentCamera = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
+	FVector FireLocation;
+	FRotator FireRotation;
+	FireLocation = CurrentCamera->GetCameraLocation();
+	FireRotation = CurrentCamera->GetCameraRotation();
+	FireRotation.Pitch += 6.5f;
+	FireLocation = FireLocation + 250 * FireRotation.Vector();
 
-		// �� MuzzleOffset ��������ռ�任������ռ�
-		//FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
-		//FRotator MuzzleRotation = CameraRotation;
+	if (RayGun)
+		RayGun->Fire(FireLocation, FireRotation.Vector());
+	else if (ProjectileGun)
+		ProjectileGun->Fire(FireLocation, FireRotation.Vector());
+	//if (ProjectileClass)
+	//{
+	//	UWorld *World = GetWorld();
+	//	if (World)
+	//	{
+	//		FActorSpawnParameters SpawnParams;
+	//		SpawnParams.Owner = this;
+	//		SpawnParams.Instigator = GetInstigator();
 
-		FVector MuzzleLocation;
-		FRotator MuzzleRotation;
-		MuzzleLocation = CurrentCamera->GetCameraLocation();
-		MuzzleRotation = CurrentCamera->GetCameraRotation();
-		MuzzleLocation = MuzzleLocation + MuzzleRotation.Vector() * 50;
-		
-		MuzzleRotation.Pitch += 8.0f;
-		UWorld *World = GetWorld();
-		if (World)
-		{
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.Owner = this;
-			SpawnParams.Instigator = GetInstigator();
-
-			// ��ǹ�ڴ����ɷ�����
-			AFPSProjectile *Projectile = World->SpawnActor<AFPSProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-			if (Projectile)
-			{
-				// ���ó�ʼ�켣
-				FVector LaunchDirection = MuzzleRotation.Vector();
-				Projectile->FireInDirection(this, LaunchDirection);
-			}
-		}
-	}
+	//		// ��ǹ�ڴ����ɷ�����
+	//		AFPSProjectile *Projectile = World->SpawnActor<AFPSProjectile>(ProjectileClass, FireLocation, FireRotation, SpawnParams);
+	//		if (Projectile)
+	//		{
+	//			// ���ó�ʼ�켣
+	//			FVector LaunchDirection = FireRotation.Vector();
+	//			Projectile->FireInDirection(this, LaunchDirection);
+	//		}
+	//	}
+	//}
 }
 
 void AFPSCharacter::GetScore(int32 s)
@@ -109,4 +136,42 @@ void AFPSCharacter::GetScore(int32 s)
 void AFPSCharacter::ClearScore()
 {
 	Score = 0;
+}
+
+void AFPSCharacter::PickupGun(ARayGun *NewRayGun)
+{
+	DropGun();
+	RayGun = NewRayGun;
+	NewRayGun->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName(TEXT("WeaponSocket")));
+	CurrentGunType = GunType::Ray;
+}
+
+void AFPSCharacter::PickupGun(AProjecitleGun *NewProjectileGun)
+{
+	DropGun();
+	ProjectileGun = NewProjectileGun;
+	NewProjectileGun->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName(TEXT("WeaponSocket")));
+	CurrentGunType = GunType::Projectile;
+}
+
+void AFPSCharacter::DropGun()
+{
+	if (ProjectileGun)
+	{
+		ProjectileGun->Destroy();
+		ProjectileGun = nullptr;
+		FVector Location = GetActorLocation() + GetActorForwardVector() * 150;
+		Location.Z = 170;
+
+		GetWorld()->SpawnActor<AProjecitleGun>(ProjecitleGunBP, Location, FRotator());
+	}
+	else if (RayGun)
+	{
+		RayGun->Destroy();
+		RayGun = nullptr;
+
+		FVector Location = GetActorLocation() + GetActorForwardVector() * 150;
+		Location.Z = 170;
+		GetWorld()->SpawnActor<ARayGun>(RayGunBP, Location, FRotator());
+	}
 }

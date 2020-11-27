@@ -28,7 +28,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	// setting projectile direction and speed
-	void FireInDirection(AFPSCharacter *Projector, const FVector& ShootDirection);
+	void FireInDirection(const FVector& ShootDirection);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Force")
+		float ShootForce;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	USphereComponent *CollisionComponent;
@@ -40,7 +43,8 @@ public:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
-	AFPSCharacter *Projector; // ������ӵ��Ľ�ɫ
+	UPROPERTY(BlueprintReadOnly, Category = Movement)
+		float FireSpeed;
 
 private:
 	bool hitted;
