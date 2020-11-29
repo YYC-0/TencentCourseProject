@@ -69,6 +69,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		int32 AmmoMax;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BPClasses)
+		TSubclassOf<AProjecitleGun> ProjecitleGunBP;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BPClasses)
+		TSubclassOf<ARayGun> RayGunBP;
+
 private:
 	enum GunType
 	{
@@ -78,7 +83,9 @@ private:
 	GunType CurrentGunType;
 
 	ARayGun *RayGun;
-	AProjecitleGun *ProjectileGun;
-	TSubclassOf<AProjecitleGun> ProjecitleGunBP;
-	TSubclassOf<ARayGun> RayGunBP;
+	AProjecitleGun *ProjectileGun; 
+
+
+	//TSubclassOf<AProjecitleGun> ProjecitleGunBP;
+	//TSubclassOf<ARayGun> RayGunBP;
 };

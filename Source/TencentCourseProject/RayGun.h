@@ -35,11 +35,11 @@ public:
 	void SetOwnedCharacter(AFPSCharacter *Character) { OwnedCharacter = Character; }
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sounds)
-		USoundWave* SoundHitHead;
+		USoundBase* SoundHitHead;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sounds)
-		USoundWave* SoundHitBody;
+		USoundBase* SoundHitBody;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sounds)
-		USoundWave* SoundHitElse; 
+		USoundBase* SoundHitElse;
 
 private:
 	bool BIsOnCharacter;

@@ -22,17 +22,17 @@ AFPSCharacter::AFPSCharacter()
 	RayGun = nullptr;
 	ProjectileGun = nullptr;
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> ProjectileGun_BP(TEXT("/Game/Blueprints/BP_ProjecitleGun.BP_ProjecitleGun"));
-	if (ProjectileGun_BP.Object)
-		ProjecitleGunBP = (UClass*)ProjectileGun_BP.Object->GeneratedClass;
-	else
-		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, TEXT("Construct Projectile Gun BP ERROR"));
+	//static ConstructorHelpers::FObjectFinder<UBlueprint> ProjectileGun_BP(TEXT("Blueprint'/Game/Blueprints/BP_ProjecitleGun.BP_ProjecitleGun'"));
+	//if (ProjectileGun_BP.Object)
+	//	ProjecitleGunBP = (UClass*)ProjectileGun_BP.Object->GeneratedClass;
+	//else
+	//	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, TEXT("Construct Projectile Gun BP ERROR"));
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> RayGun_BP(TEXT("/Game/Blueprints/BP_RayGun.BP_RayGun"));
-	if (RayGun_BP.Object)
-		RayGunBP = (UClass*)RayGun_BP.Object->GeneratedClass;
-	else
-		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, TEXT("Construct Ray Gun BP ERROR"));
+	//static ConstructorHelpers::FObjectFinder<UBlueprint> RayGun_BP(TEXT("Blueprint'/Game/Blueprints/BP_RayGun.BP_RayGun'"));
+	//if (RayGun_BP.Object)
+	//	RayGunBP = (UClass*)RayGun_BP.Object->GeneratedClass;
+	//else
+	//	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, TEXT("Construct Ray Gun BP ERROR"));
 }
 
 // Called when the game starts or when spawned
@@ -48,9 +48,12 @@ void AFPSCharacter::BeginPlay()
 	else
 		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, TEXT("Capsule Cast Error!"));
 
-	ARayGun *Gun = GetWorld()->SpawnActor<ARayGun>(RayGunBP);
-	PickupGun(Gun);
-	Gun->SetOwnedCharacter(this);
+	if (RayGunBP)
+	{
+		ARayGun *Gun = GetWorld()->SpawnActor<ARayGun>(RayGunBP);
+		PickupGun(Gun);
+		Gun->SetOwnedCharacter(this);
+	}
 }
 
 // Called every frame
