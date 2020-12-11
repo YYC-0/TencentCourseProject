@@ -24,12 +24,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const override;
+	
 	// pickup gun
 	UFUNCTION()
 		void OnCollision(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
 	// Fire
-	UFUNCTION()
+	UFUNCTION(Server, Reliable)
 		void Fire(const FVector& Pos, const FVector& Dir);
 
 	void SetOwnedCharacter(AFPSCharacter *Character) { OwnedCharacter = Character; }
@@ -41,7 +43,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sounds)
 		USoundBase* SoundHitElse;
 
+	void PlaySound(FName HitBone, FVector PlayPos);
+protected:
+	UFUNCTION()
+		void OnRep_IsFireTest();
+	UFUNCTION()
+		void OnRep_HitCharacter();
+
+	UPROPERTY(ReplicatedUsing = OnRep_IsFireTest)
+		bool IsFire;
+		FName HitBone;
+		FVector HitPos;
 private:
 	bool BIsOnCharacter;
 	AFPSCharacter *OwnedCharacter;
+
 };

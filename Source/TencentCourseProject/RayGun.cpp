@@ -9,6 +9,7 @@
 #include "Engine/World.h"
 #include "Target.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ARayGun::ARayGun()
@@ -18,6 +19,7 @@ ARayGun::ARayGun()
 
 	BIsOnCharacter = false;
 	OwnedCharacter = nullptr;
+	IsFire = false;
 }
 
 // Called when the game starts or when spawned
@@ -43,6 +45,15 @@ void ARayGun::Tick(float DeltaTime)
 
 }
 
+void ARayGun::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ARayGun, IsFire);
+	//DOREPLIFETIME(ARayGun, HitBone);
+	//DOREPLIFETIME(ARayGun, HitPos);
+}
+
 void ARayGun::OnCollision(UPrimitiveComponent *HitComp, AActor *OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
 	if (OtherActor->IsA(AFPSCharacter::StaticClass()))
@@ -59,9 +70,39 @@ void ARayGun::OnCollision(UPrimitiveComponent *HitComp, AActor *OtherActor, UPri
 	}
 }
 
-void ARayGun::Fire(const FVector &Pos, const FVector &Dir)
+void ARayGun::PlaySound(FName HitBone_, FVector PlayPos_)
 {
 	UWorld *World = GetWorld();
+	if (HitBone_ == FName("head"))
+		UGameplayStatics::PlaySoundAtLocation(World, SoundHitHead, PlayPos_);
+	else if (HitBone_ == FName("spine_01") || HitBone == FName("spine_02"))
+		UGameplayStatics::PlaySoundAtLocation(World, SoundHitBody, PlayPos_);
+	else
+		UGameplayStatics::PlaySoundAtLocation(World, SoundHitElse, PlayPos_);
+}
+
+void ARayGun::OnRep_IsFireTest()
+{
+	if (IsFire)
+	{
+		UParticleSystemComponent *FirePartical = Cast<UParticleSystemComponent>(GetComponentByClass(UParticleSystemComponent::StaticClass()));
+		if (FirePartical)
+			FirePartical->ActivateSystem();
+	}
+}
+
+void ARayGun::OnRep_HitCharacter()
+{
+	//PlaySound(HitBone, HitPos);
+}
+
+void ARayGun::Fire_Implementation(const FVector &Pos, const FVector &Dir)
+{
+	IsFire =  true;
+	UWorld *World = GetWorld();
+	if(!World)
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Get World Failed"));
+
 	FVector P = Pos;
 	UParticleSystemComponent *FirePartical = Cast<UParticleSystemComponent>(GetComponentByClass(UParticleSystemComponent::StaticClass()));
 	if (FirePartical)
@@ -69,22 +110,31 @@ void ARayGun::Fire(const FVector &Pos, const FVector &Dir)
 	FHitResult OutHit;
 	float LineDis = 10000;
 	FVector End = Pos + Dir * LineDis;
-	if (GetWorld()->LineTraceSingleByChannel(OutHit, Pos, End, ECC_Visibility))
+	if (World->LineTraceSingleByChannel(OutHit, Pos, End, ECC_Visibility))
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("You are hitting: %s"), *OutHit.GetActor()->GetName()));
 		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Purple, FString::Printf(TEXT("Impact Point: %s"), *OutHit.ImpactPoint.ToString()));
-		
+
 		// Hit Character  SK_Mannequin
 		if (OutHit.GetActor()->GetName() == FString("SK_Mannequin_5"))
 		{
-			//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("You are hitting bone: %s"), *OutHit.BoneName.ToString()));
-			if(OutHit.BoneName == FName("head"))
-				UGameplayStatics::PlaySoundAtLocation(World, SoundHitHead, OutHit.ImpactPoint);
-			else if (OutHit.BoneName == FName("spine_01") || OutHit.BoneName == FName("spine_02"))
-				UGameplayStatics::PlaySoundAtLocation(World, SoundHitBody, OutHit.ImpactPoint);
+			PlaySound(OutHit.BoneName, OutHit.ImpactPoint);
+			HitBone = OutHit.BoneName;
+			HitPos = OutHit.ImpactPoint;
+		}
+		// Hit Character
+		if (OutHit.GetActor()->IsA(AFPSCharacter::StaticClass()))
+		{
+			//PlaySound(OutHit.BoneName, OutHit.ImpactPoint);
+			HitBone = OutHit.BoneName;
+			HitPos = OutHit.ImpactPoint;
+			AFPSCharacter *Character = Cast<AFPSCharacter>(OutHit.GetActor());
+			if (Character)
+			{
+				Character->TakeOtherDamage(0.26f, OwnedCharacter);
+			}
 			else
-				UGameplayStatics::PlaySoundAtLocation(World, SoundHitElse, OutHit.ImpactPoint);
-
+				GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, TEXT("Cast character failed!"));
 		}
 
 		// Hit Target
@@ -94,8 +144,8 @@ void ARayGun::Fire(const FVector &Pos, const FVector &Dir)
 			ATarget *target = Cast<ATarget>(OutHit.GetActor());
 			FVector TargetPos, TargetBox;
 			target->GetActorBounds(false, TargetPos, TargetBox);
-			FVector HitPos = OutHit.ImpactPoint;
-			float Distance = FVector::Dist(TargetPos, HitPos);
+			FVector ImpactPos = OutHit.ImpactPoint;
+			float Distance = FVector::Dist(TargetPos, ImpactPos);
 			float Ration = Distance / TargetBox.Z;
 			// 0.27 0.44 0.65 0.83
 			// compute score
@@ -111,9 +161,11 @@ void ARayGun::Fire(const FVector &Pos, const FVector &Dir)
 
 			if(OwnedCharacter)
 				OwnedCharacter->GetScore(score);
-			GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Red, TEXT("score: " + FString::FromInt(score)));
+			//GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Red, TEXT("score: " + FString::FromInt(score)));
 
-			target->AddBulletHole(HitPos); // bullet hole decal
+			target->AddBulletHole(ImpactPos); // bullet hole decal
 		}
+
 	}
+	IsFire = false;
 }

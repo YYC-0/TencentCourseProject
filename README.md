@@ -43,7 +43,7 @@ https://docs.unrealengine.com/zh-CN/Resources/Showcases/BlueprintMultiplayer/ind
 
 
 
-## 第三次作业 
+## 第三次作业
 
 添加游戏界面： 包含角色个人信息，基础操作按钮，计分显示。 
 
@@ -61,7 +61,7 @@ https://docs.unrealengine.com/zh-CN/Engine/UMG/index.html
 
 
 
-# 第四次作业 
+## 第四次作业
 
 实现基础移动功能，包括站立Idle、跑、跳跃 
 
@@ -85,7 +85,7 @@ https://docs.unrealengine.com/zh-CN/Engine/Animation/index.html
 
 
 
-# 第五次作业 
+## 第五次作业
 
 实现枪械pick功能 
 
@@ -99,3 +99,20 @@ apk文件、视频演示百度网盘链接：
 链接：https://pan.baidu.com/s/18d_eX8ffwJD9tfSKcN5xlA  
 
 提取码：1234  
+
+
+
+## 第六次作业 
+
+使用C++实现多玩家对战： 
+
+1. 一个玩家作为主机，其他玩家加入 
+2. 死亡时有死亡表现，死亡后重生 
+3. 游戏结束进入结算界面 
+
+apk文件、视频演示百度网盘链接：  
+
+链接：https://pan.baidu.com/s/1jE7q6D9IN_7p1U5PKw7UYg 
+
+提取码：1234  
+
