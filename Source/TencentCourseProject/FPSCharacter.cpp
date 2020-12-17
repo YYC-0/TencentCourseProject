@@ -282,7 +282,8 @@ void AFPSCharacter::TakeOtherDamage(float Damage, AFPSCharacter *TakeDamageChara
 			if (HealthRemain <= 0.f)
 			{
 				Dead();
-				TakeDamageCharacter->KillCharacter(this);
+				if(TakeDamageCharacter)
+					TakeDamageCharacter->KillCharacter(this);
 			}
 		SetCurrentHealth(HealthRemain);
 	}

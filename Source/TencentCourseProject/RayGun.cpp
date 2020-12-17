@@ -10,6 +10,7 @@
 #include "Target.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "EnemyCharacter.h"
 
 // Sets default values
 ARayGun::ARayGun()
@@ -164,6 +165,18 @@ void ARayGun::Fire_Implementation(const FVector &Pos, const FVector &Dir)
 			//GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Red, TEXT("score: " + FString::FromInt(score)));
 
 			target->AddBulletHole(ImpactPos); // bullet hole decal
+		}
+
+		// Hit Enemy
+		if(OutHit.GetActor()->IsA(AEnemyCharacter::StaticClass()))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, TEXT("Hit enemy!"));
+
+			AEnemyCharacter *Enemy = Cast<AEnemyCharacter>(OutHit.GetActor());
+			if (Enemy)
+				Enemy->TakeOtherDamage(0.1);
+			else
+				GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, TEXT("Cast enemy character failed!"));
 		}
 
 	}
